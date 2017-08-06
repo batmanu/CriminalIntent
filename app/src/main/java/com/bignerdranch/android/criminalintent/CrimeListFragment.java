@@ -58,7 +58,7 @@ public class CrimeListFragment extends Fragment {
 
         updateSubtitle();
         emptyListHandler();
-
+        int i = 0;
 
         return view;
     }
