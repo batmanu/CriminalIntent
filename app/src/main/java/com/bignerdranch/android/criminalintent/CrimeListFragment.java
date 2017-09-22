@@ -1,10 +1,15 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +35,8 @@ public class CrimeListFragment extends Fragment {
     public static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     public static final String SAVED_EMPTY_LIST = "emptylist";
 
+    public static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 1;
+
     private RecyclerView mCrimeRecyclerView;
     private LinearLayout mEmptyListView;
     private CrimeAdapter mAdapter;
@@ -42,6 +49,12 @@ public class CrimeListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    MY_PERMISSION_REQUEST_READ_CONTACTS);
+        }
     }
 
     @Override
@@ -55,7 +68,7 @@ public class CrimeListFragment extends Fragment {
 
         mEmptyListView = (LinearLayout) view.findViewById(R.id.empty_add);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
             mEmptyList = savedInstanceState.getBoolean(SAVED_EMPTY_LIST);
         }
@@ -78,8 +91,8 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
-    public void emptyListHandler(){
-        if(mEmptyList){
+    public void emptyListHandler() {
+        if (mEmptyList) {
             mCrimeRecyclerView.setVisibility(View.INVISIBLE);
             mEmptyListView.setVisibility(View.VISIBLE);
         } else {
@@ -109,7 +122,7 @@ public class CrimeListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_crime_list, menu);
 
         MenuItem subtitleItem = menu.findItem(R.id.show_subtitle);
-        if(mSubtitleVisible){
+        if (mSubtitleVisible) {
             subtitleItem.setTitle(R.string.hide_subtitle);
         } else {
             subtitleItem.setTitle(R.string.show_subtitle);
@@ -118,7 +131,7 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch( item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
@@ -135,16 +148,16 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private void updateSubtitle(){
+    private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
         String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount);
 
-        if (!mSubtitleVisible){
+        if (!mSubtitleVisible) {
             subtitle = null;
         }
 
-        if (crimeCount > 0){
+        if (crimeCount > 0) {
             mEmptyList = false;
         } else {
             mEmptyList = true;
@@ -226,7 +239,7 @@ public class CrimeListFragment extends Fragment {
             return mCrimes.size();
         }
 
-        public void setCrimes(List<Crime> crimes){
+        public void setCrimes(List<Crime> crimes) {
             mCrimes = crimes;
         }
     }

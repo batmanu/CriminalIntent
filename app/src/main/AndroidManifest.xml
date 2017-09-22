@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.bignerdranch.android.criminalintent"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.bignerdranch.android.criminalintent">
 
     <application
         android:allowBackup="true"
@@ -15,9 +15,20 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".CrimePagerActivity"
+        <activity
+            android:name=".CrimePagerActivity"
             android:parentActivityName=".CrimeListActivity">
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.bignerdranch.android.criminalintent.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files"/>
+        </provider>
     </application>
 
     <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
